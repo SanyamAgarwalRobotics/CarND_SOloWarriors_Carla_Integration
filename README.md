@@ -174,6 +174,14 @@ tl_detector.py is subscribed for topics /image_color, which provides an image st
 
 The classification module, tl_classifier.py is based on [CarND Object Detection Lab](https://github.com/udacity/CarND-Object-Detection-Lab)  A new ros parameter named 'scenario' has introduced in tl_detector/launch/tl_detector.launch and in tl_detector/launch/tl_detector_site.launch to locate the frozen inference graph at runtime. By default FRCNN is set for Real track i.e. tl_detector/light_classification/frozen_models/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb
 
+
+### 3. References
+
+[TensorFlow Models](https://github.com/tensorflow/models)  
+[The PASCAL Visual Object Classes Homepage](http://host.robots.ox.ac.uk/pascal/VOC/)  
+[udacity/CarND-Object-Detection-Lab](https://github.com/udacity/CarND-Object-Detection-Lab)   
+[Alex_Lechner](https://github.com/alex-lechner/Traffic-Light-Classification)
+
 ## Installation
 
 Please use **one** of the two installation options, either native **or** docker installation.
