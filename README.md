@@ -165,7 +165,7 @@ We setup for the F-RCNN model due to its remarkable speed and accuracy
 
 ##### Training and exporting for inference
 
-All the required steps for training and exporting the inference graph are describe details  [here]()
+All the required steps for training and exporting the inference graph are describe details  [here](https://github.com/SanyamAgarwalRobotics/CarND_Sole_Warriors_Carla_Integration/blob/master/ros/src/tl_detector/README.md)
 
 
 #### 2.1.1.b. Classification
