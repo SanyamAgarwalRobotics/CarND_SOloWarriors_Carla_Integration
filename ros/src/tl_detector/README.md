@@ -3,7 +3,7 @@
 
 
 ## Commands for training and exporting for inference
-For copy and paste. :)
+Commands are given below:
 
 Needs dataset of TFRecord format and label map of pbtxt type.
 
