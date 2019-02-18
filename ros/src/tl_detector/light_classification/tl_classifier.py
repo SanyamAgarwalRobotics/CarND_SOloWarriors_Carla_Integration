@@ -1,6 +1,6 @@
 from styx_msgs.msg import TrafficLight
 from sim_model import SimModel
-from real_model import RealModel
+from realtrack_model import RealModel
 import os
 
 class TLClassifier(object):
