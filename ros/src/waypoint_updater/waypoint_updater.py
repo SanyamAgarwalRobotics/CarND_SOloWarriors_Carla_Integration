@@ -54,7 +54,7 @@ class WaypointUpdater(object):
         self.redlight_wp_index = None
 
         ## rate to publish to final_waypoints
-        self.publish_rate = 30 # doesnt make sense if >= 40, which is /current_pose rate
+        self.publish_final_waypoint = 30 
 
 
         # publish waypoints in a loop with explicit rate
@@ -78,7 +78,7 @@ class WaypointUpdater(object):
         # index of next RED light in the base_waypionts list
         self.redlight_wp_index = msg.data
         if self.redlight_wp_index >= len(self.base_waypoints_msg.waypoints):
-            rospy.logerr("Traffic light prediction error!")
+            rospy.logerr("Traffic light prediction went wrong or error in predicting light!")
 
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
@@ -89,7 +89,7 @@ class WaypointUpdater(object):
     def loop(self):
         """Publish to /final_waypoints with waypoints ahead of car
         """
-        rate = rospy.Rate(self.publish_rate)
+        rate = rospy.Rate(self.publish_final_waypoint)
         while not rospy.is_shutdown():
             # publishing nothing when receiving nothing
             if (self.car_pose is None) or (self.base_waypoints_msg is None):
@@ -97,7 +97,7 @@ class WaypointUpdater(object):
 
             ## decide target speed based on traffic light
             target_speed = MAX_SPEED
-            if self.red_light_ahead():
+            if self.found_red_light_ahead():
                 target_speed = 0
 
             ## setup lane for final_waypoints
@@ -169,11 +169,11 @@ class WaypointUpdater(object):
     def inner_product(self, vec1, vec2):
         return sum([v1*v2 for v1, v2 in zip(vec1, vec2)])
 
-    def ahead_of(self, waypoint, car_pose):
+    def waypoint_ahead_of(self, waypoint, car_pose):
         """If a waypoint is ahead of the car based on its current pose.
         Logic: In the local coordinate system (car as origin), the angle
         between the waypoint vector and the car's current yaw vector should be
-        less than 90, which also means their innter product should be positive.
+        less than 90, which also means their inner product should be positive.
         """
         wp_x, wp_y, wp_z = self.get_waypoint_coordinates(waypoint)
         car_x, car_y, car_z = self.get_car_coordinates(car_pose)
@@ -185,7 +185,7 @@ class WaypointUpdater(object):
         return self.inner_product(wp_vector, yaw_vector) > 0
 
 
-    def red_light_ahead(self):
+    def found_red_light_ahead(self):
         
         if self.redlight_wp_index is None or self.base_waypoints_msg is None:
             return False
@@ -197,7 +197,7 @@ class WaypointUpdater(object):
             light_wp = base_waypoints[self.redlight_wp_index]
             distance = self.distance(light_wp, self.car_pose)
             # stops in x distance 
-            if self.ahead_of(light_wp, self.car_pose) and distance <= 33: 
+            if self.waypoint_ahead_of(light_wp, self.car_pose) and distance <= 33: 
                 return True
             else:
                 return False
@@ -210,7 +210,7 @@ class WaypointUpdater(object):
         next_wp_index = 0
         next_wp_dist = float('inf')
         for i, wp in enumerate(waypoints):
-            if not self.ahead_of(wp, self.car_pose):
+            if not self.waypoinht_ahead_of(wp, self.car_pose):
                 continue
             else:
                 d = self.distance(wp, self.car_pose)
