@@ -12,7 +12,7 @@ Please use **one** of the two installation options, either native **or** docker 
 [image6]: ./imgs/dbw_node.png "DBW Node"
 [image7]: ./imgs/autoware_node.png "Autoware Node"
 
-### Team: Sole Survivors
+### Team: Sole Warriors
 
 | Name                       | Email                       |
 | -----------------------    | --------------------------- |
