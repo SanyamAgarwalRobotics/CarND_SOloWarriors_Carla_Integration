@@ -174,6 +174,9 @@ tl_detector.py is subscribed for topics /image_color, which provides an image st
 
 The classification module, tl_classifier.py is based on [CarND Object Detection Lab](https://github.com/udacity/CarND-Object-Detection-Lab)  A new ros parameter named 'scenario' has introduced in tl_detector/launch/tl_detector.launch and in tl_detector/launch/tl_detector_site.launch to locate the frozen inference graph at runtime. By default FRCNN is set for Real track i.e. tl_detector/light_classification/frozen_models/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb
 
+For Simulator We have used simple CV based approach inorder to overcome simulator limitations(i.e. processing + response). For simulator we have separate file [sim_model.py](https://github.com/SanyamAgarwalRobotics/CarND_Sole_Warriors_Carla_Integration/blob/master/ros/src/tl_detector/light_classification/sim_model.py)
+
+For Real Track we have separate [realtrack_model.py](https://github.com/SanyamAgarwalRobotics/CarND_Sole_Warriors_Carla_Integration/blob/master/ros/src/tl_detector/light_classification/realtrack_model.py). We have trained F-RCNN for this and used Udaicity provided Carla Real track images.
 
 ### 3. References
 
