@@ -20,8 +20,9 @@ class WaypointLoader(object):
     def __init__(self):
         rospy.init_node('waypoint_loader', log_level=rospy.DEBUG)
 
-        self.pub = rospy.Publisher('/base_waypoints', Lane, queue_size=1, latch=True)
+        self.pub = rospy.Publisher('/base_waypoints', Lane, queue_size=1,latch=True)
 
+        #self.velocity = rospy.get_param('~velocity')
         self.velocity = self.kmph2mps(rospy.get_param('~velocity'))
         self.new_waypoint_loader(rospy.get_param('~path'))
         rospy.spin()
@@ -40,6 +41,9 @@ class WaypointLoader(object):
     def kmph2mps(self, velocity_kmph):
         return (velocity_kmph * 1000.) / (60. * 60.)
 
+    def get_velocity(self, velocity):
+        return velocity/3.6
+    
     def load_waypoints(self, fname):
         waypoints = []
         with open(fname) as wfile:
