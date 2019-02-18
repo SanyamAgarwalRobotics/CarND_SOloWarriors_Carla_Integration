@@ -15,15 +15,12 @@ class Controller(object):
         
         #rospy.loginfo('my test - wheel_base:%s steer_ratio:%s max_lat_accel:%s max_steer_angle:%s', wheel_base, steer_ratio, max_lat_accel, max_steer_angle)
         self.yaw_controller = YawController(wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle)
-        kp = 5.#0.3#0.09#0.3#0.5#0.3
-        ki = 0.05#0.1#0.02#0.1
-        kd = 0.0#0.09#0.09#0.2#0.0
-        mn = 0.#decel_limit#0.#
-        mx = 0.2#accel_limit#0.2#
+        kp = 5.
+        ki = 0.05
+        kd = 0.0
+        mn = 0.
+        mx = 0.2
         
-        #self.speed_controller = PID(0.5, 0.02, 0.2, decel_limit, accel_limit)
-        self.steering_controller = PID(0.1, 0.02, 0.04 -max_steer_angle, max_steer_angle)
-        #self.steering_controller = PID(5, 0.05, 1, -max_steer_angle, max_steer_angle)
         #rospy.loginfo('my 2 test -self.min:%s self.max:%s A:%s C:%s',mn, mx)
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
         tau = 0.5#12.#0.2#0.5#0.2
@@ -57,20 +54,11 @@ class Controller(object):
         #sample_t = (time - self.last_time).nsecs / 1e9
         sample_t = (time - self.last_time)
         self.last_time = time
-        #x_vel = current_velocity[0]
-        #y_vel = current_velocity[1]
-        #current_velocity = math.sqrt(x_vel * x_vel + y_vel * y_vel)
-        corrective_steer = self.steering_controller.step(angular_velocity, sample_t)
         steer = self.yaw_controller.get_steering(linear_velocity, angular_velocity, current_velocity)
         
-        steer = steer #+ corrective_steer
         rospy.loginfo('my 2 test -S:%s CS:%s', steer, corrective_steer)
         rospy.loginfo('my 2 test -L:%s A:%s C:%s', linear_velocity, angular_velocity, current_velocity)
-        #if abs(angular_velocity - steer) > 0.001:
-            #steer += abs(angular_velocity - steer)
-        
-       # current_velocity = self.low_pass_filter.filt(current_velocity)
-        
+              
         cte = linear_velocity - current_velocity
         
         #rospy.loginfo('my test control 2')
