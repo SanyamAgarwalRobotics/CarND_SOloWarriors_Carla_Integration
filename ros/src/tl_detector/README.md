@@ -23,8 +23,7 @@ python object_detection/builders/model_builder_test.py
 # for real data
 python object_detection/train.py --logtostderr --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --train_dir train_dir/real/faster_rcnn_resnet101_coco_2018_01_28
 
-# for simulator data
-python object_detection/train.py --logtostderr --pipeline_config_path config/sim/faster_rcnn_resnet101_tl.config --train_dir train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28
+
 ```
 ##### Export frozen models
 ```
@@ -32,8 +31,7 @@ python object_detection/train.py --logtostderr --pipeline_config_path config/sim
 # for real data
 python object_detection/export_inference_graph.py --pipeline_config_path config/real/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/real/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt-{#####} --output_directory frozen_models/real/faster_rcnn_resnet101_coco_2018_01_28
 
-# for simulator data
-python object_detection/export_inference_graph.py --pipeline_config_path config/sim/faster_rcnn_resnet101_tl.config --trained_checkpoint_prefix train_dir/sim/faster_rcnn_resnet101_coco_2018_01_28/model.ckpt-{#####} --output_directory frozen_models/sim/faster_rcnn_resnet101_coco_2018_01_28
+
 ```
 
 
