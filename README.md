@@ -76,8 +76,6 @@ To make sure it does not overshoot we set extra_brake_wps so that if the car ove
 
 For **resuming** we gradually bring the car back to the pre-configured target velocity set by the launch file. We will set the waypoint velocity value to it linearly increasing it from 0 to target velocity.
 
-Some flags like `self.stopping` and `self.resuming` are present to carry the current state of the car.
-
 #### DBW (Drive-By-Wire)
 
 We update [dbw_node.py](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/twist_controller/dbw_node.py) and [twist_controller.py](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/twist_controller/twist_controller.py).
@@ -139,4 +137,115 @@ An average of current velocities are used to derive the current velocity in orde
 * Steering: For getting the steering value we use the Yaw_controller.py provided to us. It adjusts the angular velocity setpoint, based on our current speed. It uses the formula linear velocity = angular velocity * radius in physics.
 
 * Brake: Torque value for braking = deceleration x vehicle mass x wheel radius
+
+#### Traffic Light Detection
+
+We got the images of traffic light captured by simulator's camera and that by Carla's(Udacity's self driving car).We placed simulator and real car's images under `simulator_data` and `realimg_data` folder respectively. Further divided each of them into `train` and `test` folders with 30% images in `test` folder. 
+
+We used [labelImg](https://github.com/tzutalin/labelImg) to draw bounding box around the traffic light object(s) in the images and label them as either `red` or `yellow` or `green` or `unknown`
+
+Labelling `real` images:
+
+![alt text][image1]
+
+Labelling `sim` images:
+
+![alt text][image2]
+
+labelImg creates `.xml` for each image with information of the image itself and details of the bounding box and its label:
+
+![alt text][image3]
+
+
+Using a helper function [`xml_to_csv.py`](https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py), all the `.xml` are merged into a single `.csv` file. Another helper function [`generate_tfrecord.py`](https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py) is used to generate the TFRecord `.record` file which is the file format needed by TensorFlow. Slight modifications were made to the above two helper functions and are placed in this repository.
+
+##### Model Selection
+
+We setup for the F-RCNN model due to its remarkable speed and accuracy
+
+##### Training and exporting for inference
+
+All the required steps for training and exporting the inference graph are describe details  [here]()
+
+
+#### 2.1.1.b. Classification
+
+tl_detector.py is subscribed for topics /image_color, which provides an image stream from the car's camera. These images are used to determine the color of upcoming traffic lights. Based on Camera encoding this images is converted into RGB i.e. (cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)) before feed into for classification.  
+
+The classification module, tl_classifier.py is based on [CarND Object Detection Lab](https://github.com/udacity/CarND-Object-Detection-Lab)  A new ros parameter named 'scenario' has introduced in tl_detector/launch/tl_detector.launch and in tl_detector/launch/tl_detector_site.launch to locate the frozen inference graph at runtime. By default FRCNN is set for Real track i.e. tl_detector/light_classification/frozen_models/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb
+
+## Installation
+
+Please use **one** of the two installation options, either native **or** docker installation.
+
+### Native Installation
+
+* Be sure that your workstation is running Ubuntu 16.04 Xenial Xerus or Ubuntu 14.04 Trusty Tahir. [Ubuntu downloads can be found here](https://www.ubuntu.com/download/desktop).
+* If using a Virtual Machine to install Ubuntu, use the following configuration as minimum:
+  * 2 CPU
+  * 2 GB system memory
+  * 25 GB of free hard drive space
+
+  The Udacity provided virtual machine has ROS and Dataspeed DBW already installed, so you can skip the next two steps if you are using this.
+
+* Follow these instructions to install ROS
+  * [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) if you have Ubuntu 16.04.
+  * [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu) if you have Ubuntu 14.04.
+* [Dataspeed DBW](https://bitbucket.org/DataspeedInc/dbw_mkz_ros)
+  * Use this option to install the SDK on a workstation that already has ROS installed: [One Line SDK Install (binary)](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/81e63fcc335d7b64139d7482017d6a97b405e250/ROS_SETUP.md?fileviewer=file-view-default)
+* Download the [Udacity Simulator](https://github.com/udacity/CarND-Capstone/releases).
+
+### Docker Installation
+[Install Docker](https://docs.docker.com/engine/installation/)
+
+Build the docker container
+```bash
+docker build . -t capstone
+```
+
+Run the docker file
+```bash
+docker run -p 4567:4567 -v $PWD:/capstone -v /tmp/log:/root/.ros/ --rm -it capstone
+```
+
+### Port Forwarding
+To set up port forwarding, please refer to the [instructions from term 2](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77)
+
+### Usage
+
+1. Clone the project repository
+```bash
+git clone https://github.com/udacity/CarND-Capstone.git
+```
+
+2. Install python dependencies
+```bash
+cd CarND-Capstone
+pip install -r requirements.txt
+```
+3. Make and run styx
+```bash
+cd ros
+catkin_make
+source devel/setup.sh
+roslaunch launch/styx.launch
+```
+4. Run the simulator
+
+### Real world testing
+1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
+2. Unzip the file
+```bash
+unzip traffic_light_bag_file.zip
+```
+3. Play the bag file
+```bash
+rosbag play -l traffic_light_bag_file/traffic_light_training.bag
+```
+4. Launch your project in site mode
+```bash
+cd CarND-Capstone/ros
+roslaunch launch/site.launch
+```
+5. Confirm that traffic light detection works on real life images
 
