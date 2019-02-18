@@ -210,7 +210,7 @@ class WaypointUpdater(object):
         next_wp_index = 0
         next_wp_dist = float('inf')
         for i, wp in enumerate(waypoints):
-            if not self.waypoinht_ahead_of(wp, self.car_pose):
+            if not self.waypoint_ahead_of(wp, self.car_pose):
                 continue
             else:
                 d = self.distance(wp, self.car_pose)
