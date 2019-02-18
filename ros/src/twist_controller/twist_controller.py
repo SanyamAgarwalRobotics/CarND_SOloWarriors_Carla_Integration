@@ -56,7 +56,7 @@ class Controller(object):
         self.last_time = time
         steer = self.yaw_controller.get_steering(linear_velocity, angular_velocity, current_velocity)
         
-        rospy.loginfo('my 2 test -S:%s CS:%s', steer, corrective_steer)
+        rospy.loginfo('my 2 test -S:%s', steer)
         rospy.loginfo('my 2 test -L:%s A:%s C:%s', linear_velocity, angular_velocity, current_velocity)
               
         cte = linear_velocity - current_velocity
