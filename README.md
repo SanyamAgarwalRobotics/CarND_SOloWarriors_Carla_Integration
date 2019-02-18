@@ -4,13 +4,13 @@ Please use **one** of the two installation options, either native **or** docker 
 
 [//]: # (Image References)
 [image0]: ./imgs/system_arch.png "System Architecture Diagram"
-[image1]: ./readme_images/labelImg_real_img.jpg "Label Real Image"
-[image2]: ./readme_images/labelImg_sim_img.jpg "Label Sim Image"
-[image3]: ./readme_images/labelImg_xml_real_img.jpg "XML Real Image"
-[image4]: ./readme_images/traffic_node.png "Traffic Node"
-[image5]: ./readme_images/waypoint_updater.png "Waypoint Updater Node"
-[image6]: ./readme_images/dbw_node.png "DBW Node"
-[image7]: ./readme_images/autoware_node.png "Autoware Node"
+[image1]: ./imgs/labelImg_real_img.jpg "Label Real Image"
+[image2]: ./imgs/labelImg_sim_img.jpg "Label Sim Image"
+[image3]: ./imgs/labelImg_xml_real_img.jpg "XML Real Image"
+[image4]: ./imgs/traffic_node.png "Traffic Node"
+[image5]: ./imgs/waypoint_updater.png "Waypoint Updater Node"
+[image6]: ./imgs/dbw_node.png "DBW Node"
+[image7]: ./imgs/autoware_node.png "Autoware Node"
 
 ### Team: Sole Survivors
 
