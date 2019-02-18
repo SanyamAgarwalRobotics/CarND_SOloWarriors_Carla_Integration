@@ -18,7 +18,7 @@ Please use **one** of the two installation options, either native **or** docker 
 | -----------------------    | --------------------------- |
 | Sanyam Agarwal (Team Lead) | aggarwal.sanyam@gmail.com   |
 | Rakesh Paul                | rkpaul21@gmail.com          |
-| Mainsh Pandey              | Manishpandey85@gmail.com    |
+| Manish Pandey              | Manishpandey85@gmail.com    |
 
 ### 1. Submission checklist and requirements
 
