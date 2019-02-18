@@ -78,3 +78,65 @@ For **resuming** we gradually bring the car back to the pre-configured target ve
 
 Some flags like `self.stopping` and `self.resuming` are present to carry the current state of the car.
 
+#### DBW (Drive-By-Wire)
+
+We update [dbw_node.py](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/twist_controller/dbw_node.py) and [twist_controller.py](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/twist_controller/twist_controller.py).
+
+###### dbw_node.py
+DBW node took in target twist command and publish the driving command: throttle, brake and steer.
+
+This is the main class of the DBW node. It subscribe to:
+- `/vehicle/dbw_enabled` whether DBW is enabled
+- `/current_velocity` current velocity
+- `/twist_cmd` target twist command including linear and angular velocity
+
+It publishes to `/vehicle/steering_cmd` `/vehicle/throttle_cmd` `/vehicle/brake_cmd`.
+
+Not much value added in this file by us here except we instantiate a controller that took in the subscribed information and outputs steering, throttle and break. 
+
+The hardwork is in the twist_controller.py that contains the controller code.
+
+###### twist_controller.py
+Here we instantiates four extra controllers.
+`accel_controller` is a PID controller to estimate the target acceleration.
+`lowpass_filter` is a Low Pass Filter to smooth out the acceleration calcuated by the `accel_controller`.
+`yaw_controller` is a Yaw Controller to calculate the target steering based on target and current twist command.
+`throttle_controller` is another PID controler that took in acceleration output from the `lowpass_filter` and estimate the actual throttle needed.
+We reset the `throttle_controller` when acceleration is not positive. 
+If acceleration is negative, we calculate brake based on vehicle status specified by input controller.
+
+We use the given simple pid controller(pid.py) was use to smoothly drive the car in both track, autonomously.
+
+Since a safety driver may take control of the car during testing, we can not assume that the car is always following the PID commands. If a safety driver does take over, the PID controller will mistakenly accumulate error. For this reason dbw_node.py is subscribed to ros topic /vehicle/dbw_enabled and when this is off, it resets the PID controller's error function to zero.
+
+P Component  
+
+P controller steers the car proportion(inversely, Tau) to Cross Track Error. In this project where the car is driven by the waypoints, CTE was simulated as  
+
+error = Desired velocity - current velocity of the car at a time  
+
+If this number is negative means we want to reduce this error.  
+
+In other word if the above is positive, car drives faster and if negative, car slows down. With a higher Tau the car will oscillate faster.
+
+We used Kp as 5.
+
+D Component  
+
+In PD-controller, for this prooject, when the car is reducing the speed to reduce the error, it won’t just go shooting for the reference velocity but it will notice that it is already reducing the error and as the error is becoming smaller overtime, it counter steers i.e it steers up again, this will allow it to gracefully approach the reference velocity
+
+We do not use the D controller  here so Kd was set to zero.
+
+I Component  
+
+A car might have a form of wheels not aligned appropriately, in robotics it is called Systematic bias. Systematic bias will significantly increase the CTE in PD controller, so the differential term will not be able to compensate for this. This is where the I components come to play which is measured by the integral or the sum of the CTEs over time. Integral coefficient (Ki) should be carefully optimized in small steps as it has a large impact on the overall performance. We use a small value for ki = 0.1 based on trail and error  
+
+* Low pass filter  
+An average of current velocities are used to derive the current velocity in order to avoid any sporadic spike.  
+
+* Throttle: The PID controller in the twist_controller.py calculates the throttles, which is calculated as Kp*vel_err + Ki * vel_err_integral + Kd* vel_err_delta. The vel_err is calculated as the difference between the target_vel and the current_vel. The PID controller is only active if the dbw is enabled to avoid error accumulation. The Kp, Ki, Kd provided by Udacity works well in the simulator. Some other value were experimented and no significant performance improve have been seen. For the car in real world further fine tuning might be necessary.
+
+* Steering: For getting the steering value we use the Yaw_controller.py provided to us. It adjusts the angular velocity setpoint, based on our current speed. It uses the formula linear velocity = angular velocity * radius in physics.
+
+* Brake: Torque value for braking = deceleration x vehicle mass x wheel radius
+
