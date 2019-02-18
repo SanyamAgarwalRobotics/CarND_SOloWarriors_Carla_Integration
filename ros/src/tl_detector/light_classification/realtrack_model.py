@@ -30,9 +30,9 @@ class RealModel(object):
         
         img_h, img_w = img.shape[:2]
         
-        for h0 in [img_h//3]:
-            for w0 in [0, img_w//3, img_w*2//3]:
-                grid = img[h0:h0+img_h//3, w0:w0+img_w//3, :] # grid
+        for hght in [img_h//3]:
+            for widh in [0, img_w//3, img_w*2//3]:
+                grid = img[hght:hght+img_h//3, widh:widh+img_w//3, :] # grid
         
                 pred_boxes, pred_scores, pred_classes = self.sess.run([self.boxes, self.scores, self.classes],
                                                              feed_dict={self.image: np.expand_dims(grid, axis=0)})
