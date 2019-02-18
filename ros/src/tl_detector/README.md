@@ -1,6 +1,7 @@
 # Traffic light detection 
 
 
+
 ## Commands for training and exporting for inference
 For copy and paste. :)
 
@@ -42,4 +43,7 @@ python object_detection/export_inference_graph.py --pipeline_config_path config/
 export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 tensorboard --logdir=train_dir/real/faster_rcnn_resnet101_coco_2018_01_28
 ```
+### Result from New FRCNN model
 
+Use below notebook for [Model Testing](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/tl_detector/light_classification/object_detection_udacity_real.ipynb)
+[Real Testing Images](https://github.com/SanyamAgarwalRobotics/CarND_SOloWarriors_Carla_Integration/blob/master/ros/src/tl_detector/light_classification/test_images_udacity)
